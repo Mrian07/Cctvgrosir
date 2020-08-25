@@ -1,0 +1,81 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title  >Checkout</ion-title>
+      <ion-buttons slot="end" class="notification-icon-button">
+        <!-- <ion-button class="btn_badge" routerLink="/checkout">
+            <ion-icon class="fa fa-shopping-cart"></ion-icon>
+            <ion-badge class="badge_icon" color="danger" *ngIf="total_keranjang > 0 ">{{total_keranjang}}</ion-badge>
+        </ion-button>
+        <ion-button (click)="presentFilter()">
+          <span *ngIf="ios">Filter</span>
+          <span *ngIf="!ios">
+            <ion-icon slot="icon-only" name="options"></ion-icon>
+          </span>
+        </ion-button> -->
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+<ion-content>
+  <ion-list *ngIf="list_detail!=''">
+    <ion-item *ngFor="let item of list_detail; let i = index">
+        <ion-checkbox slot="start"  [(ngModel)]="item.isChecked" (click)="pilih_item($event)"></ion-checkbox>
+        <ion-label>
+            <ion-row>
+              <ion-col>
+                  <div class="nama_pro" style="width:100%">{{item.nama_pro}}</div>
+                  <div class="nama_pro" style="width:100%">Varian {{item.varian}}</div>
+                  <div class="nama_pro" style="width:100%">
+                      <ion-row>
+                          <ion-col style="text-align: center;">
+                            <ion-button class="btn_add_plus" (click)="add_minus(i)">
+                              <span style="color:black" class="fa fa-minus"></span>
+                            </ion-button>
+                          </ion-col>
+                          <ion-col><ion-input class="input_qty" [(ngModel)]="item.qty_pro"></ion-input></ion-col>
+                          <ion-col  style="text-align: center;">
+                              <ion-button class="btn_add_plus" (click)="add_plus(i)">
+                                <span class="fa fa-plus"  style="color:black" ></span>
+                              </ion-button>
+                          </ion-col>            
+                      </ion-row>               
+                  </div>
+                  <div class="nama_pro" style="width:100%">Harga : {{ item.harga_pro_real | currency : 'IDR' : 'Rp. ' : 0 }}</div>
+                  <div class="nama_pro" style="width:100%">Sub Total : {{ item.sub_total_real | currency : 'IDR' : 'Rp. ' : 0 }}</div>
+
+              </ion-col>
+            </ion-row>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+          <ion-checkbox slot="start" [(ngModel)]="checkall" (click)="check_all()"></ion-checkbox>
+          <ion-label>Check All</ion-label>
+      </ion-item>
+      <ion-item>
+        Grand total {{total_real | currency : 'IDR' : 'Rp. ' : 0 }}
+      </ion-item>
+      <ion-item>
+        <ion-row>
+          <ion-col style="text-align: center;">
+            <ion-button (click)="hapus_keranjang()">Hapus Keranjang</ion-button>
+          </ion-col>
+          <ion-col  style="text-align: center;">
+            <ion-button (click)="update_keranjang()" primary>Update QTY</ion-button>
+          </ion-col>
+          <ion-col  style="text-align: center;">
+              <ion-button (click)="ke_pengiriman()" primary>Ke pengiriman</ion-button>
+            </ion-col>        
+        </ion-row>
+      </ion-item>
+  </ion-list>
+  <ion-list *ngIf="list_detail==''">
+    <ion-item>
+      <div style="width: 100%;text-align: center;">
+          Data Keranjang Kosong
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>

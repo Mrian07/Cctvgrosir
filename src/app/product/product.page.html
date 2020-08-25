@@ -1,0 +1,194 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <ion-title  >Product</ion-title>
+
+    <ion-buttons slot="end" class="notification-icon-button">
+      <ion-button class="btn_badge" (click)="goto_checkout()">
+          <ion-icon class="fa fa-shopping-cart"></ion-icon>
+          <ion-badge class="badge_icon" color="danger" *ngIf="total_keranjang > 0 ">{{total_keranjang}}</ion-badge>
+      </ion-button>
+      <ion-button (click)="presentFilter()">
+        <span>
+          <ion-icon slot="icon-only" name="options"></ion-icon>
+        </span>
+        <!-- <span *ngIf="ios">Filter</span>
+        <span *ngIf="!ios">
+          <ion-icon slot="icon-only" name="options"></ion-icon>
+        </span> -->
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar >
+    <ion-searchbar [(ngModel)]="queryText" (search)="search_product($event)" placeholder="Search"></ion-searchbar>
+  </ion-toolbar>
+  <!-- <ion-toolbar> -->
+    <ion-row>
+      <ion-col class="head_kate" (click)="choose_kate(0)" [ngClass]="head_kategori==0 ? 'active_head_kate' : ''">
+        Default
+      </ion-col>
+      <ion-col  class="head_kate" (click)="choose_kate(1)"  [ngClass]="head_kategori==1 ? 'active_head_kate' : ''">
+        Harga
+        <ion-icon *ngIf="choose_harga==0" class="fa fa-sort-amount-down"></ion-icon>
+        <ion-icon *ngIf="choose_harga==1" class="fa fa-sort-amount-up"></ion-icon>
+      </ion-col> 
+      <ion-col  class="head_kate" (click)="choose_kate(2)"  [ngClass]="head_kategori==2 ? 'active_head_kate' : ''">
+        Penjualan
+        <ion-icon *ngIf="choose_penjualan==0" class="fa fa-sort-amount-down"></ion-icon>
+        <ion-icon *ngIf="choose_penjualan==1" class="fa fa-sort-amount-up"></ion-icon>
+      </ion-col>
+      <ion-col  class="head_kate" (click)="choose_kate(3)"  [ngClass]="head_kategori==3 ? 'active_head_kate' : ''">
+        New
+        <ion-icon *ngIf="choose_terbaru==0" class="fa fa-sort-amount-down"></ion-icon>
+        <ion-icon *ngIf="choose_terbaru==1" class="fa fa-sort-amount-up"></ion-icon>        
+      </ion-col>                 
+    </ion-row>
+  <!-- </ion-toolbar> -->
+  <!-- <ion-toolbar> -->
+    <!-- <ion-segment (ionChange)="choose_kategori($event)" scrollable> -->
+    <ion-segment scrollable>
+      <ion-segment-button value="semua" checked>
+        <ion-label class="label_kategori" (click)="choose_kategori('semua',0)">Terbaru</ion-label>
+      </ion-segment-button>
+      <ng-container *ngFor="let item of product_category">
+        <ion-segment-button [value]="item" (click)="choose_kategori(item, 1)">
+          <ion-label class="label_kategori">{{item.label}}</ion-label>          
+        </ion-segment-button>
+      </ng-container>
+    </ion-segment>
+  <!-- </ion-toolbar> -->
+  <ion-toolbar  [@visibilityChanged]="hide_header">
+    <ion-slides #IonSlides autoplay="3000" loop="true" pager="true">
+      <!-- single slide iteration -->
+      <ion-slide *ngFor="let prod of data_slider">
+          <img src="{{prod.gambar_slider}}" />
+      </ion-slide>
+  </ion-slides>    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [scrollEvents]="true" (ionScroll)="onScroll($event)">
+  <!-- <ion-list >
+    <ion-item *ngFor="let data of list_product; let i = index;">
+      <ion-row>
+        <ion-col size="6">
+          <ion-avatar id="avatar_product">
+              <img src="{{url}}normal-{{data.nama_gbr_pro}}" onerror="this.src = '/assets/img/no_image.png'">
+          </ion-avatar>
+        </ion-col>   
+        <ion-col>
+          <p id="nama_product">{{data.nama_pro}}</p>
+          <p id="div_harga">{{data.harga_jual_pro}}</p>
+        </ion-col>  
+      </ion-row>
+    </ion-item>
+  </ion-list> -->
+    <ion-refresher slot="fixed" disabled="false" (ionRefresh)="doRefresh($event)" pullFactor="0.5" pullMin="100" pullMax="200">  
+        <ion-refresher-content  
+        pullingIcon="arrow-dropdown"  
+        pullingText="Pull to refresh"  
+        refreshingSpinner="circles"  
+        refreshingText="Refreshing...">
+      </ion-refresher-content>  
+    </ion-refresher>   
+    <ion-grid>
+      <ion-row>
+        <ion-col  *ngFor="let data of list_product; let i = index;" size="12">
+          <ion-button clear class="btn_cart" (click)="insert_cart(data.id_pro)">
+              <span class="fa fa-shopping-cart" id="icon_cart"></span>
+          </ion-button>           
+          <div class="col_product" (click)="goto_detail(data.id_pro)">
+            <ion-row>
+              <ion-col size="4">
+                <div class="div_img">
+                  <img (click)="viewDetails(product.id)" class="product-image" src="{{url}}normal-{{data.nama_gbr_pro}}" onerror="this.src = '/assets/img/no_image.png'">
+                </div>
+              </ion-col>
+              <ion-col *ngIf="data_user.status_pel==1">                
+                <div class="content_product">
+                  <div class="product_code ">{{data.nama_pro}}</div>
+                  <div class="product_name">{{data.kode_pro}}</div>
+                </div>
+                <ion-row>
+                  <ion-col class="padding_0 " style="display: flex;">
+                      <div class="product_price" *ngIf="data.disc_pro > 0">
+                        {{ ( data.harga_jual_pro - ( data.harga_jual_pro * data.disc_pro ) / 100 ) | currency : 'IDR' : 'Rp.' }}
+                      </div>
+                      <div class="product_price" *ngIf="data.disc_pro == 0">
+                          {{data.harga_jual_pro | currency : 'IDR' : 'Rp.'}}
+                      </div>                      
+                      <div class="product_disc font_12" *ngIf="data.disc_pro > 0">{{data.disc_pro}}% OFF</div>
+                  </ion-col>                 
+                </ion-row>
+                <ion-row>
+                  <ion-col class="padding_0 font_12">
+                      <div class="harga_potongan" *ngIf="data.disc_pro > 0" style="padding-top:5px;">
+                          {{data.harga_jual_pro | currency : 'IDR' : 'Rp.'}}
+                      </div>
+                  </ion-col>
+                </ion-row>
+              </ion-col> 
+              <ion-col  *ngIf="data_user.status_pel==2">                
+                <div class="content_product">
+                  <div class="product_code ">{{data.nama_pro}}</div>
+                  <div class="product_name">{{data.kode_pro}}</div>
+                </div>
+                <ion-row>
+                  <ion-col class="padding_0 " style="display: flex;">
+                      <div class="product_price" *ngIf="data.disc_pro > 0">
+                        {{ ( data.harga_reseller - ( data.harga_reseller * data.disc_pro ) / 100 ) | currency : 'IDR' : 'Rp.' }}
+                      </div>
+                      <div class="product_price" *ngIf="data.disc_pro == 0">
+                          {{data.harga_reseller | currency : 'IDR' : 'Rp.'}}
+                      </div>                      
+                      <div class="product_disc font_12" *ngIf="data.disc_pro > 0">{{data.disc_pro}}% OFF</div>
+                  </ion-col>                 
+                </ion-row>
+                <ion-row>
+                  <ion-col class="padding_0 font_12">
+                      <div class="harga_potongan" *ngIf="data.disc_pro > 0" style="padding-top:5px;">
+                          {{data.harga_reseller | currency : 'IDR' : 'Rp.'}}
+                      </div>
+                  </ion-col>
+                </ion-row>
+              </ion-col> 
+              <ion-col  *ngIf="data_user.status_pel==0">                
+                <div class="content_product">
+                    <div class="product_code ">{{data.nama_pro}}</div>
+                    <div class="product_name">{{data.kode_pro}}</div>
+                </div>
+                <ion-row>
+                  <ion-col class="padding_0 " style="display: flex;">
+                      <div class="product_price" *ngIf="data.disc_pro > 0">
+                        {{ ( data.harga_user - ( data.harga_user * data.disc_pro ) / 100 ) | currency : 'IDR' : 'Rp.' }}
+                      </div>
+                      <div class="product_price" *ngIf="data.disc_pro == 0">
+                          {{data.harga_user | currency : 'IDR' : 'Rp.'}}
+                      </div>                      
+                      <div class="product_disc font_12" *ngIf="data.disc_pro > 0">{{data.disc_pro}}% OFF</div>
+                  </ion-col>                 
+                </ion-row>
+                <ion-row>
+                  <ion-col class="padding_0 font_12">
+                      <div class="harga_potongan" *ngIf="data.disc_pro > 0" style="padding-top:5px;">
+                          {{data.harga_user | currency : 'IDR' : 'Rp.'}}
+                      </div>
+                  </ion-col>
+                </ion-row>
+              </ion-col>                                       
+            </ion-row>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-infinite-scroll (ionInfinite)="loadData($event)">
+        <ion-infinite-scroll-content
+          loadingSpinner="bubbles"
+          loadingText="Loading more data...">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>   
+</ion-content>

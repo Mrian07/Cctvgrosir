@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <ion-title>Riwayat Order</ion-title>
+
+    <ion-buttons slot="end" class="notification-icon-button">
+      <ion-button class="btn_badge" (click)="goto_checkout()">
+          <ion-icon class="fa fa-shopping-cart"></ion-icon>
+          <ion-badge class="badge_icon" color="danger" *ngIf="total_keranjang > 0 ">{{total_keranjang}}</ion-badge>
+      </ion-button>
+      <!-- <ion-button (click)="presentFilter()">
+        <span>
+          <ion-icon slot="icon-only" name="options"></ion-icon>
+        </span>
+      </ion-button> -->
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar >
+    <ion-searchbar [(ngModel)]="queryText" (search)="search_product($event)" placeholder="ID Order / Nama Penerima"></ion-searchbar>
+  </ion-toolbar>
+  <!-- <form #formstatus="ngForm" novalidate> -->
+  <ion-toolbar >
+    <ion-row>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="stacked" color="primary">Pembayaran</ion-label>
+          <ion-select type="text" #status_pembayaran placeholder="--Pilih--" (ionChange)="pilih_pembayaran($event)">
+              <ion-select-option value="">Semua</ion-select-option>
+              <ion-select-option value="0">Belum Lunas</ion-select-option>
+              <ion-select-option value="1">Lunas</ion-select-option>
+          </ion-select>
+        </ion-item>        
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="stacked" color="primary">Status</ion-label>
+          <ion-select type="text" #status_order placeholder="--Pilih--" (ionChange)="pilih_status($event)">
+              <ion-select-option value="">Semua</ion-select-option>
+              <ion-select-option  value="0">Pesanan Baru</ion-select-option >
+              <ion-select-option  value="1">Menunggu Transfer</ion-select-option >
+              <ion-select-option  value="2">Dalam Proses</ion-select-option >
+              <ion-select-option  value="3">Dalam Pengiriman</ion-select-option >
+              <ion-select-option  value="4">Paket Diterima</ion-select-option >              
+          </ion-select>
+        </ion-item>        
+      </ion-col>      
+    </ion-row>
+  </ion-toolbar>
+<!-- </form>   -->
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" disabled="false" (ionRefresh)="doRefresh($event)" pullFactor="0.5" pullMin="100" pullMax="200">  
+    <ion-refresher-content  
+    pullingIcon="arrow-dropdown"  
+    pullingText="Pull to refresh"  
+    refreshingSpinner="circles"  
+    refreshingText="Refreshing...">
+  </ion-refresher-content>  
+</ion-refresher>   
+<ion-grid>
+  <ion-row  >
+    <ion-col class="col_product" *ngFor="let data of list_product; let i = index;" size="12">
+      <ion-row>
+        <ion-col style="font-weight: bold;">ID Order</ion-col>
+        <ion-col style="white-space: normal;">{{data.id_order}}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col style="font-weight: bold;">Tgl Order</ion-col>
+        <ion-col  style="white-space: normal;">{{data.tgl_order }}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col style="font-weight: bold;">Nama Penerima</ion-col>
+        <ion-col  style="white-space: normal;">{{data.nama_penerima }}</ion-col>
+      </ion-row>            
+      <ion-row>
+        <ion-col style="font-weight: bold;">Status Pembayaran</ion-col>
+        <ion-col  style="white-space: normal;">{{data.status_pembayaran == 0 ? 'Belum Lunas' : 'Lunas' }}</ion-col>
+      </ion-row> 
+      <ion-row>
+        <ion-col style="font-weight: bold;">Status</ion-col>
+        <ion-col  style="white-space: normal;">
+          <div *ngIf="data.status_order == 0">Pesanan Baru</div>
+          <div *ngIf="data.status_order == 1">Menunggu Transfer</div>
+          <div *ngIf="data.status_order == 2">Dalam Proses</div>
+          <div *ngIf="data.status_order == 3">Dalam Pengiriman</div>
+          <div *ngIf="data.status_order == 4">Paket di terima</div>
+        </ion-col>
+      </ion-row>                       
+      <ion-row>
+        <ion-col style="font-weight: bold;">Grand Total</ion-col>
+        <ion-col  style="white-space: normal;">{{data.grand_total | currency : 'IDR' : 'Rp. ' }}</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button style="width: 100%;" (click)="goto_detail(data.id_order)">Detail</ion-button>
+        </ion-col>
+        <ion-col>          
+          <ion-button style="width: 100%;" *ngIf="data.status_pembayaran==0" (click)="konfirmasi(data.id_order)">Konfirmasi</ion-button>
+        </ion-col>
+      </ion-row>                        
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<ion-infinite-scroll (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+</ion-infinite-scroll> 
+</ion-content>

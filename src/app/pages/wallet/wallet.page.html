@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <ion-title  >Wallet</ion-title>
+
+    <ion-buttons slot="end" class="notification-icon-button">
+      <ion-button class="btn_badge" (click)="goto_checkout()">
+          <ion-icon class="fa fa-shopping-cart"></ion-icon>
+          <ion-badge class="badge_icon" color="danger" *ngIf="total_keranjang > 0 ">{{total_keranjang}}</ion-badge>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        Data Wallet
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>Saldo yang tersedia</ion-col>
+          <ion-col>{{data_wallet.saldo==null ? 0 : data_wallet.saldo | currency : 'IDR' : 'Rp. '}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">Total Withdraw</ion-col>
+          <ion-col>
+            <ion-input [(ngModel)]="total_widthdraw" type="number" placeholder="Jumlah disesuaikan dengan Saldo tersedia"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="save()" expand="full" >Submit</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

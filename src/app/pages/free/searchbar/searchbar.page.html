@@ -1,0 +1,17 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>Searchbar</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar (ionInput)="search_item($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list *ngIf="param_type=='category'">
+    <ion-item *ngFor="let item of categories" (click)="choose_category(item)" [hidden]="item.hide">{{item.category}}</ion-item>
+  </ion-list>
+  <ion-list *ngIf="param_type=='type'">
+    <ion-item *ngFor="let item of item_type" (click)="choose_category(item)" [hidden]="item.hide">{{item.type}}</ion-item>
+  </ion-list>
+
+</ion-content>

@@ -1,0 +1,70 @@
+<!-- <ion-header>
+  <ion-toolbar > -->
+    <!-- <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons> -->
+
+    <!-- <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content class="log_content">
+  <!-- <div class="login-logo">
+    <img src="assets/img/logo.png" alt="Ionic logo">
+  </div> -->
+  <div style="width: 100%;text-align:center;margin-top: 60px; margin-bottom: 30px;">
+    <img src="assets/img/logo.png" style="width:180px;" alt="Ionic logo">
+  </div> 
+  <div style="width: 100%;text-align:center;margin-top: 40px; margin-bottom: 30px;
+  font-size:20px;color:white;font-weight: bold;">
+    Selamat datang kembali...
+  </div>
+  <ion-card class="card_login_form">
+      <form #loginForm="ngForm" novalidate>
+        <ion-list>
+          <ion-item>
+            <ion-label position="stacked" color="primary">Username</ion-label>
+            <ion-input [(ngModel)]="login.username" name="username" type="text" #username="ngModel" spellcheck="false" autocapitalize="off"
+              required>
+            </ion-input>
+          </ion-item>
+          <ion-text color="danger">
+            <p [hidden]="username.valid || submitted == false" class="ion-padding-start">
+              Username is required
+            </p>
+          </ion-text>
+
+          <ion-item>
+            <ion-label position="stacked" color="primary">Password</ion-label>
+            <ion-input [(ngModel)]="login.password" name="password" type="password" #password="ngModel" required>
+            </ion-input>
+          </ion-item>
+
+          <ion-text color="danger">
+            <p [hidden]="password.valid || submitted == false" class="ion-padding-start">
+              Password is required
+            </p>
+          </ion-text>
+        </ion-list>
+      </form>
+      <ion-row>
+          <ion-col>
+            <ion-button (click)="onLogin(loginForm)" type="submit" expand="block">Login</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button (click)="onSignup()" color="light" expand="block">Daftar</ion-button>
+          </ion-col>
+      </ion-row> 
+      <ion-row>
+        <ion-col style="text-align: center;">
+            <a button (click)="lupa_password()">Lupa Password ? Klik disini</a>
+        </ion-col>
+        <ion-col style="text-align: center;" size="12">
+          Ada kendala silakan hubungi tim CS kami : 
+          <br/>
+          <a class="set-button" href="https://api.whatsapp.com/send?phone=+6281292926955" target="_blank">0812 9292 6955</a>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+
+</ion-content>

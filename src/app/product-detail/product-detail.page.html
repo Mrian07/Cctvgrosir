@@ -1,0 +1,142 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/product"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Produk Detail</ion-title>
+        <ion-buttons slot="end" class="notification-icon-button">
+          <ion-button class="btn_badge" (click)="goto_checkout()">
+              <ion-icon class="fa fa-shopping-cart"></ion-icon>
+              <ion-badge class="badge_icon" color="danger" *ngIf="total_keranjang > 0 ">{{total_keranjang}}</ion-badge>
+          </ion-button>
+        </ion-buttons>      
+    </ion-toolbar>
+</ion-header> 
+<ion-content>
+  <ion-row>
+    <ion-col>
+      <!-- <div class="cover" [(ngStyle)]="cover_style"> -->
+      <div class="cover">
+          <img class="img_product" src="{{cover}}" onerror="this.src = '/assets/img/no_image.png'">
+      </div>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+      <ion-col size="12" [class.red_bg]="true">
+          Nama Produk
+      </ion-col>
+      <!-- <ion-col size="1">
+          :
+      </ion-col>       -->
+      <ion-col size="12">
+          {{nama_pro}}
+      </ion-col>      
+  </ion-row> 
+  <ion-row>
+    <ion-col size="12"  [class.red_bg]="true">
+        Deskripsi
+    </ion-col>
+    <!-- <ion-col size="1">
+        :
+    </ion-col>       -->
+    <ion-col size="12" style="white-space:  normal;"  [innerHTML] = "desc_pro">
+    </ion-col>      
+</ion-row>  
+  <ion-row>
+      <ion-col size="12" [class.red_bg]="true">
+          Stock Tersedia
+      </ion-col>
+      <!-- <ion-col size="1">
+          :
+      </ion-col>       -->
+      <ion-col size="12">
+          {{stok_pro}}
+      </ion-col>      
+  </ion-row>
+  <ion-row>
+      <ion-col size="12" [class.red_bg]="true">
+          Harga
+      </ion-col>
+      <!-- <ion-col size="1">
+          :
+      </ion-col>       -->
+      <!-- <ion-col size="12" *ngIf="disc_pro > 0"> -->
+            <!-- <ng-container *ngIf="status_pel==1"> -->
+                <!-- normal disc:  -->
+                <!-- {{ harga_jual_pro2 - ( harga_jual_pro2 * disc_pro / 100 ) | currency : 'IDR' : 'Rp.' }} -->
+            <!-- </ng-container> -->
+            <!-- <ng-container *ngIf="status_pel==2"> -->
+                <!-- reseller disc:  -->
+                <!-- {{ harga_jual_reseller - ( harga_jual_reseller * disc_pro / 100 ) | currency : 'IDR' : 'Rp.' }} -->
+            <!-- </ng-container> -->
+      <!-- </ion-col> -->
+        <ion-col size="12">
+
+            <ng-container *ngIf="status_pel==1; then pel1; else checkpel2"></ng-container>
+            
+            <ng-template #pel1>
+                <!-- status 1 : -->
+                {{harga_jual_pro2 - (harga_jual_pro2 * disc_pro / 100) | currency : 'IDR' : 'Rp.'}}
+            </ng-template>
+            <ng-template #checkpel2>
+                <ng-container *ngIf="status_pel==2; then pel2; else checkpel0"></ng-container>
+            </ng-template>
+            <ng-template #pel2>
+                <!-- status 2: -->
+                {{harga_jual_reseller - (harga_jual_reseller * disc_pro / 100) | currency : 'IDR' : 'Rp.'}}
+            </ng-template>
+            
+            <ng-template #checkpel0>
+                <ng-container *ngIf="status_pel==0; then pel0; else otherpel"></ng-container>
+            </ng-template>
+
+            <ng-template #pel0>
+                {{harga_user - (harga_user * disc_pro / 100) | currency : 'IDR' : 'Rp.'}}
+            </ng-template>
+
+            <ng-template #otherpel>
+                <!-- status other: -->
+                {{harga_jual_pro2 - (harga_jual_pro2 * disc_pro / 100) | currency : 'IDR' : 'Rp.'}}
+            </ng-template>
+    </ion-col>
+  </ion-row>  
+  <ion-row>
+      <ion-col size="12" [class.red_bg]="true">
+          Quantity
+      </ion-col>
+      <!-- <ion-col size="1">
+          :
+      </ion-col>       -->
+      <ion-col size="12">
+      </ion-col>      
+  </ion-row> 
+  <ion-row style="text-align: center;">   
+      <ion-col size="2"></ion-col>
+      <ion-col size="8">
+          <ion-row style="margin: 0 auto;text-align: center;">
+              <ion-col style="text-align: center;" size="4">
+                <ion-button class="btn_add_plus" (click)="add_minus()">
+                  <span style="color:black" class="fa fa-minus"></span>
+                </ion-button>
+              </ion-col>
+              <ion-col  size="4"><ion-input class="input_qty" [(ngModel)]="input_qty"></ion-input></ion-col>
+              <ion-col   size="4" style="text-align: center;">
+                  <ion-button class="btn_add_plus" (click)="add_plus()">
+                    <span class="fa fa-plus"  style="color:black" ></span>
+                  </ion-button>
+              </ion-col>            
+          </ion-row>        
+      </ion-col> 
+      <ion-col size="2"></ion-col>
+  </ion-row> 
+
+  <ion-row>
+      <ion-col size="2">
+      </ion-col>     
+      <ion-col size="8" style="text-align: center;">
+          <ion-button (click)="insert_cart()">Beli Produk</ion-button>
+      </ion-col>  
+      <ion-col size="2">
+    </ion-col>           
+  </ion-row>    
+</ion-content>

@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+    </ion-buttons>    
+    <ion-title>Blog</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-card *ngFor="let item of hasil">
+      <ion-card-header>
+        <ion-card-title>{{item.nama_blog}}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content fullscreen>
+        <img src="{{item.cover_blog}}">
+        <div [innerHTML]="item.isi_blog"></div>
+      </ion-card-content >
+    </ion-card>
+  </ion-list>
+</ion-content>

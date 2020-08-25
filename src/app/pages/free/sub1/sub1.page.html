@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>    
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form #myForm="ngForm" novalidate>
+    <ion-list lines="none">
+        <ion-item class="form_item">
+          <ion-label position="stacked" class="label_item">Category</ion-label>
+          <ion-input [(ngModel)]="item_form.category" (click)="show_searchbar('category')" name="category" type="text" readonly #category="ngModel" required placeholder="Select Category">
+          </ion-input>
+        </ion-item>
+        <ion-text color="danger">
+          <p [hidden]="item_form.category || submitted == false" class="ion-padding-start">
+            Category is required
+          </p>
+        </ion-text> 
+        <ion-item class="form_item">
+          <ion-label position="stacked" class="label_item">Type</ion-label>
+          <ion-input [(ngModel)]="item_form.type" name="type" (click)="show_searchbar('type')" readonly type="text" #type="ngModel" required placeholder="Select Type">
+          </ion-input>
+        </ion-item>
+        <ion-text color="danger">
+          <p [hidden]="item_form.category || submitted == false" class="ion-padding-start">
+            Type is required
+          </p>
+        </ion-text>  
+        <ion-item class="form_item">
+          <ion-label position="stacked" class="label_item">Info</ion-label>
+          <ion-input [(ngModel)]="item_form.info" name="info" type="text" #info="ngModel" required placeholder="Info">
+          </ion-input>
+        </ion-item>
+        <ion-text color="danger">
+          <p [hidden]="item_form.category || submitted == false" class="ion-padding-start">
+            Info is required
+          </p>
+        </ion-text>  
+        <ion-item class="form_item">
+          <ion-label position="stacked" class="label_item">Year</ion-label>
+          <ion-input [(ngModel)]="item_form.year" name="year" (click)="openPicker()" readonly type="text" #year="ngModel" required placeholder="Select Year">
+          </ion-input>
+        </ion-item>
+        <ion-text color="danger">
+          <p [hidden]="item_form.category || submitted == false" class="ion-padding-start">
+            Year is required
+          </p>
+        </ion-text>
+        <ion-item >
+          <ion-label position="stacked" class="label_item">Color</ion-label>
+          <ion-input [(ngModel)]="item_form.color" name="color" type="hidden" #color="ngModel" required placeholder="Select Year">
+          </ion-input>
+        </ion-item>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col class="con-color" [style.backgroundColor]="item.color" size="4" *ngFor="let item of item_colors; let i = index">
+
+            </ion-col>
+          </ion-row>
+        </ion-grid>                                  
+    </ion-list>
+
+    <div class="ion-padding">
+      <ion-button (click)="onSubmit(myForm)" type="submit" expand="block">Submit</ion-button>
+    </div>
+  </form>
+</ion-content>

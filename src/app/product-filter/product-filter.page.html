@@ -1,0 +1,99 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="reset()">Reset</ion-button>
+    </ion-buttons>
+    <ion-title style="text-align: center;">
+      <!-- Filter Produk -->
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button strong (click)="dismiss('cancel')">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+
+  <ion-content>
+    <!-- <form [formGroup]="formfilter"> -->
+    <ion-list>
+      <ion-list-header>Filter Produk</ion-list-header>
+      <ion-item>
+        <ion-label>Pilih Kategori</ion-label>
+        <ion-select interface="modal" id="pilih_kategori2" #pilih_kategori2
+          [value]="filter_array.length > 0 ? filter_array[0].link : null" (ionChange)="choose_filter_cat($event, 1)"
+          [selectedText]="filter_array.length > 0 ? filter_array[0].label : null">
+          <ng-container *ngFor="let categ of product_category; let i = index;">
+            <ion-select-option value="{{categ.link}}">{{categ.label}}</ion-select-option>
+          </ng-container>
+        </ion-select>
+      </ion-item>
+
+      <ng-container *ngFor="let fa of filter_array; let i = index">
+        <ng-container *ngIf="fa.children != undefined && fa.children != null && fa.children.length > 0">
+          <ion-item>
+            <ion-label>Pilih Sub-Kategori</ion-label>
+            <ion-select interface="modal" id="pilih_kategori" (ionChange)="choose_filter_cat($event, i+2)"
+            [selectedText]="filter_array.length > i+1 ? filter_array[i+1].label : null"
+            [value]="filter_array.length > i+1 ? filter_array[i+1].link : null">
+              <ng-container *ngFor="let categ of fa.children; let i2 = index;">
+                <ion-select-option value="{{categ.link}}">{{categ.label}}</ion-select-option>
+              </ng-container>
+            </ion-select>
+          </ion-item>
+        </ng-container>
+      </ng-container>
+
+      <!-- <ion-item>
+          <ion-label>Pilih Kategori</ion-label>
+          <ion-select interface="modal" id="pilih_kategori" #pilih_kategori [selectedText]="selected_category" [(ngModel)]="model_category" (ionChange)="choose_category($event)" #projectSelect>
+            <ion-select-option  *ngFor="let categ of product_category; let i = index;" value="{{i}}">{{categ.label}}</ion-select-option>
+          </ion-select>
+        </ion-item>   
+        <ion-item>
+            <ion-label>Pilih Sub Kategori</ion-label>
+            <ion-select interface="popover"  [(ngModel)]="model_sub_category"   (ionChange)="choose_sub_category($event)" [disabled]="disable_sub=='hide'">
+              <ion-select-option *ngFor="let categ of product_sub_category; let i = index;" value="{{categ.link}}">{{categ.label}}</ion-select-option>
+            </ion-select>
+        </ion-item>   -->
+      <ion-item>
+        <ion-label>Urut</ion-label>
+        <ion-select interface="popover" [(ngModel)]="model_order" (ionChange)="order_even($event)"
+          class="pop_order ion-text-wrap">
+          <ion-select-option value="price_asc">
+            Terendah ke Termahal
+          </ion-select-option>
+          <ion-select-option value="price_desc">
+            Termahal ke Terendah
+          </ion-select-option>
+          <ion-select-option value="date_asc">
+            Terbaru ke Terlama
+          </ion-select-option>
+          <ion-select-option value="date_desc">
+            Terlama ke Terbaru
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <ion-list>
+      <ion-list-header>Kisaran Harga</ion-list-header>
+      <ion-item>
+        <ion-row>
+          <ion-col>
+            <ion-input clearInput="true" type="text" #idmin_price id="idmin_price" ([ngModel])="min_price"
+              (ionInput)="convert_min($event)" placeholder="Minimal"></ion-input>
+          </ion-col>
+          <ion-col>
+            <ion-input clearInput="true" type="text" #idmax_price id="idmax_price" ([ngModel])="max_price"
+              (ionInput)="convert_max($event)" placeholder="Maksimal"></ion-input>
+          </ion-col>
+        </ion-row>
+      </ion-item>
+    </ion-list>
+    <!-- </form> -->
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="dismiss('done')" expand="full">Terapkan</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-content>

@@ -1,0 +1,15 @@
+.cat-has-children {
+    background-color: red;
+    --color: yellow;
+    min-height: 300px;
+}
+
+.action-sheet-button.sc-ion-action-sheet-md  {
+    color: yellow;
+    background-color: yellow;
+}
+
+.action-sheet-button-inner.sc-ion-action-sheet-md {
+    color: yellow !important;
+    background-color: yellow !important;
+}
