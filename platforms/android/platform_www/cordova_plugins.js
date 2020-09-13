@@ -187,6 +187,11 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "pluginId": "cordova-plugin-advanced-http"
     },
     {
+      "id": "cordova-plugin-advanced-http.dependency-validator",
+      "file": "plugins/cordova-plugin-advanced-http/www/dependency-validator.js",
+      "pluginId": "cordova-plugin-advanced-http"
+    },
+    {
       "id": "cordova-plugin-advanced-http.error-codes",
       "file": "plugins/cordova-plugin-advanced-http/www/error-codes.js",
       "pluginId": "cordova-plugin-advanced-http"
@@ -219,6 +224,11 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     {
       "id": "cordova-plugin-advanced-http.messages",
       "file": "plugins/cordova-plugin-advanced-http/www/messages.js",
+      "pluginId": "cordova-plugin-advanced-http"
+    },
+    {
+      "id": "cordova-plugin-advanced-http.ponyfills",
+      "file": "plugins/cordova-plugin-advanced-http/www/ponyfills.js",
       "pluginId": "cordova-plugin-advanced-http"
     },
     {
@@ -282,6 +292,22 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "pluginId": "cordova-plugin-device",
       "clobbers": [
         "device"
+      ]
+    },
+    {
+      "id": "cordova-plugin-fcm-with-dependecy-updated.FCMPlugin",
+      "file": "plugins/cordova-plugin-fcm-with-dependecy-updated/www/FCMPlugin.js",
+      "pluginId": "cordova-plugin-fcm-with-dependecy-updated",
+      "clobbers": [
+        "FCM"
+      ]
+    },
+    {
+      "id": "cordova-plugin-firebase-analytics.FirebaseAnalytics",
+      "file": "plugins/cordova-plugin-firebase-analytics/www/FirebaseAnalytics.js",
+      "pluginId": "cordova-plugin-firebase-analytics",
+      "merges": [
+        "cordova.plugins.firebase.analytics"
       ]
     },
     {
@@ -354,36 +380,29 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "clobbers": [
         "window.plugins.toast"
       ]
-    },
-    {
-      "id": "onesignal-cordova-plugin.OneSignal",
-      "file": "plugins/onesignal-cordova-plugin/www/OneSignal.js",
-      "pluginId": "onesignal-cordova-plugin",
-      "clobbers": [
-        "OneSignal"
-      ]
     }
   ];
   module.exports.metadata = {
     "cordova-clipboard": "1.3.0",
     "cordova-plugin-file": "6.0.2",
-    "cordova-plugin-advanced-http": "2.2.0",
+    "cordova-plugin-advanced-http": "3.0.1",
     "cordova-plugin-androidx": "1.0.2",
     "cordova-plugin-androidx-adapter": "1.1.0",
     "cordova-plugin-camera": "4.1.0",
     "cordova-plugin-device": "2.0.3",
+    "cordova-plugin-fcm-with-dependecy-updated": "7.3.1",
     "cordova-support-android-plugin": "1.0.1",
     "cordova-support-google-services": "1.3.2",
-    "cordova-plugin-firebase-dynamiclinks": "4.0.3",
-    "cordova-plugin-inappbrowser": "3.1.0",
+    "cordova-plugin-firebase-analytics": "4.4.1",
+    "cordova-plugin-firebase-dynamiclinks": "4.5.0",
+    "cordova-plugin-inappbrowser": "3.2.0",
     "cordova-plugin-ionic-keyboard": "2.2.0",
-    "cordova-plugin-ionic-webview": "4.1.3",
-    "cordova-plugin-splashscreen": "5.0.3",
+    "cordova-plugin-ionic-webview": "5.0.0",
+    "cordova-plugin-splashscreen": "6.0.0",
     "cordova-plugin-statusbar": "2.4.3",
     "cordova-plugin-whitelist": "1.3.4",
     "es6-promise-plugin": "4.2.2",
-    "cordova-plugin-x-socialsharing": "5.6.3",
-    "cordova-plugin-x-toast": "2.7.2",
-    "onesignal-cordova-plugin": "2.8.1"
+    "cordova-plugin-x-socialsharing": "6.0.2",
+    "cordova-plugin-x-toast": "2.7.2"
   };
 });

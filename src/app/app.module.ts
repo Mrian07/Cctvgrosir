@@ -22,7 +22,7 @@ import { IonicHeaderParallaxModule } from 'ionic-header-parallax';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
-import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
 
 @NgModule({
   imports: [
@@ -41,7 +41,7 @@ import { OneSignal } from '@ionic-native/onesignal/ngx';
     }),
   ],
   declarations: [AppComponent],
-  providers: [InAppBrowser, SplashScreen, StatusBar, HTTP, Camera, FirebaseDynamicLinks, SocialSharing, Clipboard, Toast, OneSignal],
+  providers: [InAppBrowser, SplashScreen, StatusBar, HTTP, Camera, FirebaseDynamicLinks, SocialSharing, Clipboard, Toast, FCM],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

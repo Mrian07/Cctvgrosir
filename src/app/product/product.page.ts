@@ -12,6 +12,7 @@ import { UserData } from '../providers/user-data';
 import { IonicHeaderParallaxModule } from 'ionic-header-parallax';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ConstantService } from '../providers/constant.service';
+import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
 
 @Component({
   selector: 'product',
@@ -62,15 +63,33 @@ export class ProductPage implements OnInit {
     private combroadcast: NgxCommunicateService,
     private userdata: UserData,
     public constant: ConstantService,
-    public actionSheetController: ActionSheetController
+    public actionSheetController: ActionSheetController,
+    private fcm: FCM
   ) {
+
     this.get_product('refresh', '');
     this.get_product_category();
     this.combroadcast.on('broadcast_keranjang', (data : any )=>{
       this.get_total_keranjang();
     })
-
   }
+  
+  subscribeToTopic() {
+    this.fcm.subscribeToTopic('enappd');
+  }
+
+  getToken() {
+    this.fcm.getToken().then(token => {
+      console.log(token)
+      // Register your new token in your back-end if you want
+      // backend.registerToken(token);
+    });
+  }
+
+  unsubscribeFromTopic() {
+    this.fcm.unsubscribeFromTopic('enappd');
+  }
+
   ionViewDidEnter() {
     this.slides.startAutoplay();//slider autoplay biult-in function
     // this.platform.backButton.subscribe(hsl=>{
@@ -233,6 +252,31 @@ export class ProductPage implements OnInit {
       }else{
         this.data_user=hsl;
         this.get_total_keranjang();
+        this.platform.ready()
+          .then(() => {
+            console.log("Tesss");
+            this.fcm.onNotification().subscribe(data => {
+              console.log(data);
+              if (data.wasTapped) {
+                console.log("Received in background");
+              } else {
+                console.log("Received in foreground");
+              };
+              if(data.type == "NEWS") {
+                alert(data.id);
+              }
+            });
+
+            this.getToken();
+
+            this.fcm.onTokenRefresh({once:false}).subscribe(token => {
+              console.log(token)
+              // Register your new token in your back-end if you want
+              // backend.registerToken(token);
+            });
+
+            // this.subscribeToTopic();
+          })
       }
     });
     this.get_data_slider();
@@ -334,17 +378,17 @@ export class ProductPage implements OnInit {
     if (type == 'refresh'){
       this.list_product = [];
     }
-    this.http.post(API_URL_SLIDER + 'get_product', {
+    this.http.get(API_URL_SLIDER + 'get_product', {params:{
       offset: this.list_product.length,
       type: type,
-      cari: this.queryText,
+      cari: this.queryText as any,
       selected_category: this.selected_category,
       selected_sub_category: this.selected_sub_category,
       min_price: this.min_price,
       max_price: this.max_price,
       order: this.order,
       terbaru : this.choose_terbaru
-    })
+    }})
       .pipe(map((data: any) => {
         console.log(data, 'map')
         return data.data;
@@ -357,6 +401,7 @@ export class ProductPage implements OnInit {
             event.target.complete();
         } else {
           this.arr.forEach(element => {
+            console.log(element);
             this.list_product.push(element);
           });
           if (event)

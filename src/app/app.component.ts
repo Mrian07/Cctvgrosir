@@ -16,7 +16,6 @@ import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { NgxXml2jsonService } from 'ngx-xml2json';
 import { API_URL } from './providers/constant.service';
 import { FirebaseDynamicLinks } from '@ionic-native/firebase-dynamic-links/ngx';
-import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { ConstantService } from './providers/constant.service';
 @Component({
   selector: 'app-root',
@@ -98,7 +97,6 @@ export class AppComponent implements OnInit {
   actionSheet: any;
   constructor(
     private consta : ConstantService,
-    private oneSignal: OneSignal,
     private menu: MenuController,
     private platform: Platform,
     private router: Router,
@@ -340,29 +338,6 @@ export class AppComponent implements OnInit {
           console.log(res, 'firebase dynamic link')
         },
           (error: any) => console.log(error));
-
-          this.oneSignal.startInit('77b3a0fa-a8b6-4973-b1b0-52b889c8370d', '370227405496');
-          this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.None);
-          this.userData.getUsername().then(hsl => {
-              let hasil : any = {};
-              hasil = hsl;
-              if(hasil !='' && hasil.id_pel)
-              this.oneSignal.sendTag('id_pel', hasil.id_pel);
-          });
-          this.oneSignal.handleNotificationReceived().subscribe((hsl) => {
-            let hasil : any = {};
-            hasil = hsl;
-            this.consta.show_alert('Pesan', hasil.payload.title, hasil.payload.body);
-            console.log(hsl, 'HASIL')
-           // do something when notification is received
-          });
-          
-          this.oneSignal.handleNotificationOpened().subscribe((hsl) => {
-            console.log(hsl, 'HASIL')
-            // do something when a notification is opened
-          });
-          this.oneSignal.endInit();
-
     });
   }
 

@@ -3,7 +3,7 @@
     <name>cctvgrosir.com</name>
     <description>Belanja cctv murah</description>
     <author email="sabardotnet@gmail.com" href="http://ionicframework.com/">sabardotnet@gmail.com</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://localhost:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -41,6 +41,11 @@
         <splash density="port-xxhdpi" src="resources/android/splash/drawable-port-xxhdpi-screen.png" />
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
         <preference name="GoogleAndroidClientId" value="336966052089-notsjpldncdh66uhs2ontcv1tkf3v8lg.apps.googleusercontent.com" />
+        <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml" />
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
+            <application android:usesCleartextTraffic="true" />
+            <application android:networkSecurityConfig="@xml/network_security_config" />
+        </edit-config>
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
@@ -100,4 +105,5 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.2" />
     <engine name="ios" spec="^4.5.5" />
+    <allow-navigation href="http://localhost:8100" sessionid="adcc57d3" />
 </widget>

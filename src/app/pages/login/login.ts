@@ -17,7 +17,6 @@ import { map } from 'rxjs/operators';
 import { NgxXml2jsonService } from 'ngx-xml2json';
 import { NgxCommunicateService } from 'ngx-communicate';
 import { API_URL } from '../../providers/constant.service';
-import { OneSignal } from '@ionic-native/onesignal/ngx';
 
 @Component({
   selector: 'page-login',
@@ -45,7 +44,6 @@ export class LoginPage {
   alert1 : any;
   hasil : any = {};
   constructor(
-    private oneSignal: OneSignal,
     public platform : Platform,
     public userData: UserData,
     public router: Router,
@@ -108,7 +106,6 @@ export class LoginPage {
         console.log(data); 
         this.hasil = data;
         if(this.hasil.code==1){
-          this.oneSignal.sendTag('id_pel', this.hasil.id_pel);
           this.userData.login(this.hasil).then(hasl => { 
             this.loading.dismiss();
             this.communicate.broadcast('login_success', 'login_success');

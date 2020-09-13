@@ -1,7 +1,9 @@
 package com.silkimen.cordovahttp;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -14,14 +16,15 @@ import com.silkimen.http.HttpBodyDecoder;
 import com.silkimen.http.HttpRequest;
 import com.silkimen.http.HttpRequest.HttpRequestException;
 import com.silkimen.http.JsonUtils;
-import com.silkimen.http.OkConnectionFactory;
 import com.silkimen.http.TLSConfiguration;
 
 import org.apache.cordova.CallbackContext;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Base64;
 import android.util.Log;
 
 abstract class CordovaHttpBase implements Runnable {
@@ -76,6 +79,7 @@ abstract class CordovaHttpBase implements Runnable {
       this.prepareRequest(request);
       this.sendBody(request);
       this.processResponse(request, response);
+      request.disconnect();
     } catch (HttpRequestException e) {
       if (e.getCause() instanceof SSLException) {
         response.setStatus(-2);
@@ -120,7 +124,6 @@ abstract class CordovaHttpBase implements Runnable {
     request.readTimeout(this.timeout);
     request.acceptCharset("UTF-8");
     request.uncompress(true);
-    request.setConnectionFactory(new OkConnectionFactory());
 
     if (this.tlsConfiguration.getHostnameVerifier() != null) {
       request.setHostnameVerifier(this.tlsConfiguration.getHostnameVerifier());
@@ -139,8 +142,12 @@ abstract class CordovaHttpBase implements Runnable {
       request.contentType("application/json", "UTF-8");
     } else if ("utf8".equals(this.serializer)) {
       request.contentType("text/plain", "UTF-8");
+    } else if ("raw".equals(this.serializer)) {
+      request.contentType("application/octet-stream");
     } else if ("urlencoded".equals(this.serializer)) {
       // intentionally left blank, because content type is set in HttpRequest.form()
+    } else if ("multipart".equals(this.serializer)) {
+      request.contentType("multipart/form-data");
     }
   }
 
@@ -153,8 +160,26 @@ abstract class CordovaHttpBase implements Runnable {
       request.send(this.data.toString());
     } else if ("utf8".equals(this.serializer)) {
       request.send(((JSONObject) this.data).getString("text"));
+    } else if ("raw".equals(this.serializer)) {
+      request.send(Base64.decode((String)this.data, Base64.DEFAULT));
     } else if ("urlencoded".equals(this.serializer)) {
       request.form(JsonUtils.getObjectMap((JSONObject) this.data));
+    } else if ("multipart".equals(this.serializer)) {
+      JSONArray buffers = ((JSONObject) this.data).getJSONArray("buffers");
+      JSONArray names = ((JSONObject) this.data).getJSONArray("names");
+      JSONArray fileNames = ((JSONObject) this.data).getJSONArray("fileNames");
+      JSONArray types = ((JSONObject) this.data).getJSONArray("types");
+
+      for (int i = 0; i < buffers.length(); ++i) {
+        byte[] bytes = Base64.decode(buffers.getString(i), Base64.DEFAULT);
+        String name = names.getString(i);
+
+        if (fileNames.isNull(i)) {
+          request.part(name, new String(bytes, "UTF-8"));
+        } else {
+          request.part(name, fileNames.getString(i), types.getString(i), new ByteArrayInputStream(bytes));
+        }
+      }
     }
   }
 
@@ -167,7 +192,7 @@ abstract class CordovaHttpBase implements Runnable {
     response.setHeaders(request.headers());
 
     if (request.code() >= 200 && request.code() < 300) {
-      if ("text".equals(this.responseType)) {
+      if ("text".equals(this.responseType) || "json".equals(this.responseType)) {
         String decoded = HttpBodyDecoder.decodeBody(outputStream.toByteArray(), request.charset());
         response.setBody(decoded);
       } else {
