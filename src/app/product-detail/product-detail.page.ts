@@ -115,7 +115,7 @@ export class ProductDetailPage implements OnInit {
         this.cover=this.data_product_detail.cover;
         this.cover_style = { 'background-image' : 'url("'+this.data_product_detail.cover+'")'};
         console.log(this.status_pel);
-        debugger;
+        // debugger;
       })
   }
   async insert_cart(){

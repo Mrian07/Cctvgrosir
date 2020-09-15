@@ -3,7 +3,7 @@
     <name>cctvgrosir.com</name>
     <description>Belanja cctv murah</description>
     <author email="sabardotnet@gmail.com" href="http://ionicframework.com/">sabardotnet@gmail.com</author>
-    <content original-src="index.html" src="http://localhost:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -105,5 +105,5 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.2" />
     <engine name="ios" spec="^4.5.5" />
-    <allow-navigation href="http://localhost:8100" sessionid="adcc57d3" />
+    <allow-navigation href="http://localhost:8100" sessionid="1c538a96" />
 </widget>

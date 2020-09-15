@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 // production
 export let API_RAJAONKIR='';
 export let BASE_URL = 'https://shop.cctvgrosir.com/';
+// export let BASE_URL = 'http://192.168.100.13:8080/cctvgrosir/';
 // export let API_URL = 'https://msidahua.com/app/';
 export let API_URL = BASE_URL + 'app/';
 // export let API_URL_SLIDER='https://msidahua.com/app/';

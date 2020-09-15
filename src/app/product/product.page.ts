@@ -12,7 +12,10 @@ import { UserData } from '../providers/user-data';
 import { IonicHeaderParallaxModule } from 'ionic-header-parallax';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ConstantService } from '../providers/constant.service';
+
 import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
+// import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+// import { API_URL } from '../providers/constant.service';
 
 @Component({
   selector: 'product',
@@ -64,7 +67,9 @@ export class ProductPage implements OnInit {
     private userdata: UserData,
     public constant: ConstantService,
     public actionSheetController: ActionSheetController,
-    private fcm: FCM
+    private fcm: FCM,
+    // private localNotifications: LocalNotifications,
+    // public http2: HttpClient,
   ) {
 
     this.get_product('refresh', '');
@@ -72,23 +77,67 @@ export class ProductPage implements OnInit {
     this.combroadcast.on('broadcast_keranjang', (data : any )=>{
       this.get_total_keranjang();
     })
+
+    // this.platform.ready()
+    // .then(() => {
+    //   console.log("Tesss");
+    //   this.fcm.onNotification().subscribe(data => {
+    //     console.log(data);
+    //     if (data.wasTapped) {
+    //       console.log("Received in background");
+    //       if(data.type == "NEWS") {
+    //         alert(data.id);
+    //       }
+    //     } else {
+    //       console.log("Received in foreground");
+    //       // this.localNotifications.schedule({
+    //       //     id: 1,
+    //       //     title: data.title,
+    //       //     text: data.body,
+    //       //     data: {
+    //       //       id: data.id,
+    //       //       type: data.type
+    //       //     }
+    //       // });
+
+    //       // this.localNotifications.on("click").subscribe(notification => {
+    //       //   console.log(notification.data);
+    //       //   // Insert your logic here
+    //       // });
+          
+    //     };
+    //   });
+
+      // this.getToken();
+      // this.subscribeToTopic();
+
+      // this.fcm.onTokenRefresh({once:false}).subscribe(token => {
+      //   console.log(token)
+      //   // Register your new token in your back-end if you want
+      //   // backend.registerToken(token);
+      // });
+
+      // this.subscribeToTopic();
+    // })
   }
   
-  subscribeToTopic() {
-    this.fcm.subscribeToTopic('enappd');
-  }
+  // subscribeToTopic() {
+  //   this.fcm.subscribeToTopic('all');
+  // }
 
-  getToken() {
-    this.fcm.getToken().then(token => {
-      console.log(token)
-      // Register your new token in your back-end if you want
-      // backend.registerToken(token);
-    });
-  }
+  // getToken() {
+  //   this.fcm.getToken().then(token => {
+  //     console.log(token)
+  //     this.http2.post(API_URL + 'save_fcm', { id_pel : this.data_user.id_pel, token : token }, {} )
+  //     .subscribe(( data ) => {
+  //       console.log(data); 
+  //     })
+  //   });
+  // }
 
-  unsubscribeFromTopic() {
-    this.fcm.unsubscribeFromTopic('enappd');
-  }
+  // unsubscribeFromTopic() {
+  //   this.fcm.unsubscribeFromTopic('all');
+  // }
 
   ionViewDidEnter() {
     this.slides.startAutoplay();//slider autoplay biult-in function
@@ -252,31 +301,6 @@ export class ProductPage implements OnInit {
       }else{
         this.data_user=hsl;
         this.get_total_keranjang();
-        this.platform.ready()
-          .then(() => {
-            console.log("Tesss");
-            this.fcm.onNotification().subscribe(data => {
-              console.log(data);
-              if (data.wasTapped) {
-                console.log("Received in background");
-              } else {
-                console.log("Received in foreground");
-              };
-              if(data.type == "NEWS") {
-                alert(data.id);
-              }
-            });
-
-            this.getToken();
-
-            this.fcm.onTokenRefresh({once:false}).subscribe(token => {
-              console.log(token)
-              // Register your new token in your back-end if you want
-              // backend.registerToken(token);
-            });
-
-            // this.subscribeToTopic();
-          })
       }
     });
     this.get_data_slider();

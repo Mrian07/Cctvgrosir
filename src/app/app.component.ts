@@ -17,6 +17,12 @@ import { NgxXml2jsonService } from 'ngx-xml2json';
 import { API_URL } from './providers/constant.service';
 import { FirebaseDynamicLinks } from '@ionic-native/firebase-dynamic-links/ngx';
 import { ConstantService } from './providers/constant.service';
+import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { HttpClient } from '@angular/common/http';
+import { NgZone } from '@angular/core';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -113,7 +119,12 @@ export class AppComponent implements OnInit {
     public loadingCtrl: LoadingController,
     public alertController: AlertController,
     private firebaseDynamicLinks: FirebaseDynamicLinks,
-    public actionSheetController: ActionSheetController
+    public actionSheetController: ActionSheetController,
+    private fcm: FCM,
+    private localNotifications: LocalNotifications,
+    public http2: HttpClient,
+    public zone: NgZone,
+    public inAppBrowser: InAppBrowser,
   ) {
     
     this.initializeApp();
@@ -157,6 +168,7 @@ export class AppComponent implements OnInit {
     })
     
   }
+
   ionViewWillEnter() {
     this.userData.getUsername().then(hsl => {
       if (hsl == null) {
@@ -304,10 +316,10 @@ export class AppComponent implements OnInit {
       // Handle error
     });
   }
+
   initializeApp() {
     let subs: any;
     this.platform.ready().then(() => {
-
       // this.platform.backButton.subscribe(hsl=>{
       this.platform.backButton.subscribeWithPriority(0, () => {
         this.routerOutlets.forEach((outlet: IonRouterOutlet) => {
@@ -338,6 +350,74 @@ export class AppComponent implements OnInit {
           console.log(res, 'firebase dynamic link')
         },
           (error: any) => console.log(error));
+
+      console.log("Tesss");
+      this.fcm.onNotification().subscribe(data => {
+        console.log(data);
+        if (data.wasTapped) {
+          console.log("Received in background");
+          if(data.type == "PRODUCT") {
+            if(data.type == "PRODUCT") {
+              this.zone.run(() => {
+                this.router.navigateByUrl('/product-detail/' + data.id);
+              });
+            }else if(data.type == "BLOG") {
+              this.zone.run(() => {
+                this.router.navigateByUrl('/blog');
+              });
+            }else if(data.type == "LINK") {
+              this.inAppBrowser.create(
+                data.id,
+                '_blank'
+              );
+            }else {
+              this.zone.run(() => {
+                this.router.navigateByUrl('/');
+              });
+            }
+          }
+        } else {
+          console.log("Received in foreground");
+          this.localNotifications.schedule({
+              id: 1,
+              title: data.title,
+              text: data.body,
+              data: {
+                id: data.id,
+                type: data.type
+              }
+          });
+
+          this.localNotifications.on("click").subscribe(notification => {
+              console.log(notification.data);
+              if(notification.data.type == "PRODUCT") {
+                this.zone.run(() => {
+                  this.router.navigateByUrl('/product-detail/' + notification.data.id);
+                });
+              }else if(notification.data.type == "BLOG") {
+                this.zone.run(() => {
+                  this.router.navigateByUrl('/blog');
+                });
+              }else if(notification.data.type == "LINK") {
+                this.inAppBrowser.create(
+                  notification.data.id,
+                  '_blank'
+                );
+              }else {
+                this.zone.run(() => {
+                  this.router.navigateByUrl('/');
+                });
+              }
+          });
+          
+        };
+      });
+
+      this.fcm.onTokenRefresh({once:false}).subscribe(token => {
+        console.log(token)
+        // Register your new token in your back-end if you want
+        // backend.registerToken(token);
+      });
     });
   }
 
@@ -350,6 +430,10 @@ export class AppComponent implements OnInit {
   updateLoggedInStatus(loggedIn: boolean) {
     setTimeout(() => {
       if (loggedIn) {
+
+        this.getToken();
+        this.subscribeToTopic();
+
         this.show_div_photo_profile = true;
       } else {
         this.show_div_photo_profile = false;
@@ -376,6 +460,7 @@ export class AppComponent implements OnInit {
 
   logout() {
     this.userData.logout().then(() => {
+      this.unsubscribeFromTopic();
       return this.router.navigateByUrl('/login');
     });
   }
@@ -385,4 +470,23 @@ export class AppComponent implements OnInit {
     this.storage.set('ion_did_tutorial', false);
     this.router.navigateByUrl('/tutorial');
   }
+  
+  subscribeToTopic() {
+    this.fcm.subscribeToTopic('all');
+  }
+
+  getToken() {
+    this.fcm.getToken().then(token => {
+      console.log(token)
+      this.http2.post(API_URL + 'save_fcm', { id_pel : this.arr_sess.id_pel, token : token }, {} )
+      .subscribe(( data ) => {
+        console.log(data); 
+      })
+    });
+  }
+
+  unsubscribeFromTopic() {
+    this.fcm.unsubscribeFromTopic('all');
+  }
+
 }

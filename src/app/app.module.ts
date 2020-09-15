@@ -23,6 +23,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { Toast } from '@ionic-native/toast/ngx';
 import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx'
 
 @NgModule({
   imports: [
@@ -41,7 +42,7 @@ import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
     }),
   ],
   declarations: [AppComponent],
-  providers: [InAppBrowser, SplashScreen, StatusBar, HTTP, Camera, FirebaseDynamicLinks, SocialSharing, Clipboard, Toast, FCM],
+  providers: [InAppBrowser, SplashScreen, StatusBar, HTTP, Camera, FirebaseDynamicLinks, SocialSharing, Clipboard, Toast, FCM, LocalNotifications],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
