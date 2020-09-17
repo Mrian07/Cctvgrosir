@@ -352,72 +352,98 @@ export class AppComponent implements OnInit {
           (error: any) => console.log(error));
 
       console.log("Tesss");
-      this.fcm.onNotification().subscribe(data => {
-        console.log(data);
-        if (data.wasTapped) {
-          console.log("Received in background");
-          if(data.type == "PRODUCT") {
+      var th = this;
+      setTimeout(function() {
+          
+        th.fcm.onNotification().subscribe(data => {
+          console.log(data);
+          if (data.wasTapped) {
+            console.log("Received in background");
             if(data.type == "PRODUCT") {
-              this.zone.run(() => {
-                this.router.navigateByUrl('/product-detail/' + data.id);
+              th.zone.run(() => {
+                th.router.navigateByUrl('/product-detail/' + data.id);
               });
             }else if(data.type == "BLOG") {
-              this.zone.run(() => {
-                this.router.navigateByUrl('/blog');
+              th.zone.run(() => {
+                th.router.navigateByUrl('/blog');
               });
             }else if(data.type == "LINK") {
-              this.inAppBrowser.create(
+              th.inAppBrowser.create(
                 data.id,
                 '_blank'
               );
             }else {
-              this.zone.run(() => {
-                this.router.navigateByUrl('/');
+              th.zone.run(() => {
+                th.router.navigateByUrl('/');
+              });
+            }
+          } else {
+            console.log("Received in foreground");
+            th.localNotifications.schedule({
+                id: 1,
+                title: data.title,
+                text: data.body,
+                data: {
+                  id: data.id,
+                  type: data.type
+                }
+            });
+
+            th.localNotifications.on("click").subscribe(notification => {
+                console.log(notification.data);
+                if(notification.data.type == "PRODUCT") {
+                  th.zone.run(() => {
+                    th.router.navigateByUrl('/product-detail/' + notification.data.id);
+                  });
+                }else if(notification.data.type == "BLOG") {
+                  th.zone.run(() => {
+                    th.router.navigateByUrl('/blog');
+                  });
+                }else if(notification.data.type == "LINK") {
+                  th.inAppBrowser.create(
+                    notification.data.id,
+                    '_blank'
+                  );
+                }else {
+                  th.zone.run(() => {
+                    th.router.navigateByUrl('/');
+                  });
+                }
+            });
+            
+          };
+        });
+
+        th.fcm.onTokenRefresh({once:false}).subscribe(token => {
+          console.log(token)
+          // Register your new token in your back-end if you want
+          // backend.registerToken(token);
+        });
+
+        th.fcm.getInitialPushPayload().then(data => {
+          if(data != null) {
+            if(data.type == "PRODUCT") {
+              th.zone.run(() => {
+                th.router.navigateByUrl('/product-detail/' + data.id);
+              });
+            }else if(data.type == "BLOG") {
+              th.zone.run(() => {
+                th.router.navigateByUrl('/blog');
+              });
+            }else if(data.type == "LINK") {
+              th.inAppBrowser.create(
+                data.id,
+                '_blank'
+              );
+            }else {
+              th.zone.run(() => {
+                th.router.navigateByUrl('/');
               });
             }
           }
-        } else {
-          console.log("Received in foreground");
-          this.localNotifications.schedule({
-              id: 1,
-              title: data.title,
-              text: data.body,
-              data: {
-                id: data.id,
-                type: data.type
-              }
-          });
+        });
 
-          this.localNotifications.on("click").subscribe(notification => {
-              console.log(notification.data);
-              if(notification.data.type == "PRODUCT") {
-                this.zone.run(() => {
-                  this.router.navigateByUrl('/product-detail/' + notification.data.id);
-                });
-              }else if(notification.data.type == "BLOG") {
-                this.zone.run(() => {
-                  this.router.navigateByUrl('/blog');
-                });
-              }else if(notification.data.type == "LINK") {
-                this.inAppBrowser.create(
-                  notification.data.id,
-                  '_blank'
-                );
-              }else {
-                this.zone.run(() => {
-                  this.router.navigateByUrl('/');
-                });
-              }
-          });
-          
-        };
-      });
-
-      this.fcm.onTokenRefresh({once:false}).subscribe(token => {
-        console.log(token)
-        // Register your new token in your back-end if you want
-        // backend.registerToken(token);
-      });
+      }, 3000)
     });
   }
 
